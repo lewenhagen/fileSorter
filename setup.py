@@ -19,7 +19,7 @@ def create_folders(pathToFolder):
             print("Folder --->", pathToFolder ,"<--- exists. Skipping.")
 
     except FileNotFoundError:
-        print("File not found error. Try again.")
+        print("File not found. Try again.")
 
 
 
@@ -28,27 +28,27 @@ def setup_folders(FOLDERS):
     """ Change name on folders """
 
     for folder in sorted(FOLDERS.keys()):
+        if folder not in ("result", "unsorted"):
+            ff = helpers.remove_illegal_chars(input("Folder name for " + folder + "? (Enter for default) "))
 
-        ff = helpers.remove_illegal_chars(input("Folder name for " + folder + "? (Enter for default) "))
+            if ff is "":
+                input("### Leaving " + folder + " folder as default. Press Enter. ###")
+            else:
+                FOLDERS[folder] = ff
 
-        if ff is "":
-            input("### Leaving " + folder + " folder as default. Press Enter. ###")
-        else:
-            FOLDERS[folder] = ff
-
-        if folder == "baseFolder" or folder == "unsortedFolder":
-            create_folders(FOLDERS[folder])
-        else:
-            create_folders(FOLDERS["baseFolder"] + "/" + FOLDERS[folder])
+            if folder == "result" or folder == "unsorted":
+                create_folders(FOLDERS[folder])
+            else:
+                create_folders(FOLDERS["result"] + "/" + FOLDERS[folder])
 
     input("------ Done creating folders. Press any key. -------")
 
 
 def remove_folder(folderToRemove):
-    """ Deletes baseFolder """
+    """ Deletes result """
     try:
         sure = input("Are you sure you want to delete the folder: '" + folderToRemove + "'? [y/N] ").lower()
-        if sure in ("y", "yes"):
+        if sure in ("y", "yes", "Y"):
             shutil.rmtree(folderToRemove, ignore_errors=False, onerror=None)
         else:
             pass

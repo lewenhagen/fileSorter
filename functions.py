@@ -61,8 +61,8 @@ def scan_folder(FOLDERS, scan_me):
     folderPath = FOLDERS[scan_me]
     structure = []
 
-    if scan_me not in ("baseFolder", "unsortedFolder"):
-        folderPath = FOLDERS["baseFolder"] + "/" + FOLDERS[scan_me]
+    if scan_me not in ("result", "unsorted"):
+        folderPath = FOLDERS["result"] + "/" + FOLDERS[scan_me]
 
     for dirname, dirnames, filenames in os.walk(folderPath):
         for subdirname in dirnames:
@@ -98,11 +98,11 @@ def get_exif(fn):
 def create_structure_and_copy(FOLDERS, images):
     """ Creates the structure from finished images """
 
-    finished_path = FOLDERS["baseFolder"] + "/" + FOLDERS["finishedFolder"]
-    unfinished_path = FOLDERS["baseFolder"] + "/" + FOLDERS["unfinishedFolder"]
+    finished_path = FOLDERS["result"] + "/" + FOLDERS["finished"]
+    unfinished_path = FOLDERS["result"] + "/" + FOLDERS["unfinished"]
 
-    # print(finished_path) videoFolder
-    print(images)
+    # print(finished_path) video
+    # print(images)
     for image in images:
         create_year = image["created"]["year"]
         create_month = image["created"]["month"]
@@ -132,8 +132,8 @@ def create_structure_and_copy(FOLDERS, images):
 def create_structure_and_copy_videos(FOLDERS, videos):
     """ Creates the structure from finished videos """
 
-    finished_path = FOLDERS["baseFolder"] + "/" + FOLDERS["finishedFolder"] + "/" + FOLDERS["videoFolder"]
-    unfinished_path = FOLDERS["baseFolder"] + "/" + FOLDERS["unfinishedFolder"] + "/" + FOLDERS["videoFolder"]
+    finished_path = FOLDERS["result"] + "/" + FOLDERS["finished"] + "/" + FOLDERS["video"]
+    unfinished_path = FOLDERS["result"] + "/" + FOLDERS["unfinished"] + "/" + FOLDERS["video"]
 
     # print(finished_path)
 
@@ -152,27 +152,33 @@ def startSort(FOLDERS):
     videos = []
     mime = magic.Magic(mime=True)
 
-    if not os.listdir(FOLDERS["unsortedFolder"]):
-        print("The folder is empty, please dump your photos and videos there.")
-    else:
-        for dirname, dirnames, filenames in os.walk(FOLDERS["unsortedFolder"]):
-            for filename in filenames:
-                if "image" in mime.from_file(os.path.join(dirname, filename)):
-                    images.append({
-                            "image": os.path.join(dirname, filename),
-                            "created": get_exif(os.path.join(dirname, filename))
+    try:
+        if not os.listdir(FOLDERS["unsorted"]):
+            print("The folder: " + FOLDERS["unsorted"] + " is empty, please dump your photos and videos there.")
+        else:
+            for dirname, dirnames, filenames in os.walk(FOLDERS["unsorted"]):
+                for filename in filenames:
+                    if "image" in mime.from_file(os.path.join(dirname, filename)):
+                        images.append({
+                                "image": os.path.join(dirname, filename),
+                                "created": get_exif(os.path.join(dirname, filename))
+                            })
+                    if "video" in mime.from_file(os.path.join(dirname, filename)):
+                        videos.append({
+                            "video": os.path.join(dirname, filename),
+                            "filename": filename
                         })
-                if "video" in mime.from_file(os.path.join(dirname, filename)):
-                    videos.append({
-                        "video": os.path.join(dirname, filename),
-                        "filename": filename
-                    })
-        # print(images)
-        # print(videos)
+            # print(images)
+            # print(videos)
 
-        print("------------------ I will now start with the images. ------------------")
-        create_structure_and_copy(FOLDERS, images)
-        print("------------------ I will now start with the videos. ------------------")
-        create_structure_and_copy_videos(FOLDERS, videos)
+            print("------------------ I will now start with the images. ------------------")
+            create_structure_and_copy(FOLDERS, images)
+            print("------------------ I will now start with the videos. ------------------")
+            create_structure_and_copy_videos(FOLDERS, videos)
 
-        # print("HERE:", videos)
+            # print("HERE:", videos)
+    except FileNotFoundError as e:
+        print("Error:", e)
+        print("I create the folder for you...")
+        os.makedirs(FOLDERS["unsorted"])
+        print("...done. Folder created.")

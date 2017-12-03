@@ -6,11 +6,11 @@ import parser, sys, setup, functions
 import time
 
 FOLDERS = {
-    "baseFolder": "Result",
-    "finishedFolder": "Finished",
-    "unfinishedFolder": "Unfinished",
-    "videoFolder": "Video",
-    "unsortedFolder": "Unsorted"
+    "result": "Result",
+    "finished": "Finished",
+    "unfinished": "Unfinished",
+    "video": "Video",
+    "unsorted": "Unsorted"
 }
 
 def main():
@@ -23,7 +23,7 @@ def main():
     if command == "setup":
         setup.setup_folders(FOLDERS)
     elif command == "clean":
-        setup.remove_folder(FOLDERS["baseFolder"])
+        setup.remove_folder(FOLDERS["result"])
     elif command == "start":
         start_time = time.time()
         functions.startSort(FOLDERS)
