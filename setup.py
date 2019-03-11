@@ -44,13 +44,13 @@ def setup_folders(FOLDERS):
     input("------ Done creating folders. Press any key. -------")
 
 
-def remove_folder(folderToRemove):
+def remove_folder(folder_to_remove):
     """ Deletes result """
     try:
-        sure = input("Are you sure you want to delete the folder: '" + folderToRemove + "'? [y/N] ").lower()
+        sure = input("Are you sure you want to delete the folder: '" + folder_to_remove + "'? [y/N] ").lower()
         if sure in ("y", "yes", "Y"):
-            shutil.rmtree(folderToRemove, ignore_errors=False, onerror=None)
+            shutil.rmtree(folder_to_remove, ignore_errors=False, onerror=None)
         else:
             pass
     except FileNotFoundError:
-        print("Folder: '" + folderToRemove + "' is not created.")
+        print("Folder: '" + folder_to_remove + "' is not created.")

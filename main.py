@@ -26,11 +26,11 @@ def main():
         setup.remove_folder(FOLDERS["result"])
     elif command == "start":
         start_time = time.time()
-        functions.startSort(FOLDERS)
+        functions.start_sort(FOLDERS)
         print("--- %s seconds ---" % (time.time() - start_time))
     elif command == "scan":
         print("\n### Available folders ###\n")
-        functions.presentFolders(FOLDERS)
+        functions.present_folders(FOLDERS)
     sys.exit()
 
 
